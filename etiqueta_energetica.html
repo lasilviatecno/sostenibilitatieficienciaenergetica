@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>L'Etiqueta Energètica – Tecnologia i Digitalització 1r ESO</title>
+  <style>
+    /* ── Reset i base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f0f4f8;
+      color: #1a2a3a;
+    }
+
+    /* ── Capçalera ── */
+    header {
+      background: linear-gradient(135deg, #002060 0%, #0070c0 100%);
+      color: #fff;
+      padding: 2rem 1.5rem 1.5rem;
+      text-align: center;
+    }
+    header h1 { font-size: 2rem; letter-spacing: 1px; margin-bottom: .4rem; }
+    header p  { font-size: 1rem; opacity: .85; }
+
+    /* ── Navegació ── */
+    nav {
+      background: #0070c0;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: .3rem;
+      padding: .5rem 1rem;
+    }
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      padding: .4rem 1rem;
+      border-radius: 20px;
+      font-size: .92rem;
+      transition: background .2s;
+    }
+    nav a:hover { background: rgba(255,255,255,.25); }
+
+    /* ── Contingut ── */
+    main { max-width: 900px; margin: 2rem auto; padding: 0 1rem 3rem; }
+
+    section {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.08);
+      padding: 1.8rem 2rem;
+      margin-bottom: 2rem;
+      display: none; /* Ocultes per defecte */
+    }
+    section.active { display: block; }
+
+    h2 {
+      font-size: 1.4rem;
+      color: #002060;
+      margin-bottom: 1rem;
+      padding-bottom: .4rem;
+      border-bottom: 3px solid #0070c0;
+    }
+    h3 { font-size: 1.1rem; color: #0070c0; margin: 1rem 0 .5rem; }
+    p  { line-height: 1.7; margin-bottom: .8rem; }
+
+    /* ── Escala energètica ── */
+    .escala { list-style: none; margin: 1rem 0; }
+    .escala li {
+      display: flex;
+      align-items: center;
+      gap: .8rem;
+      margin-bottom: .4rem;
+      font-size: .95rem;
+    }
+    .badge {
+      width: 2.4rem; height: 2.4rem;
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: bold; font-size: 1.1rem; color: #fff;
+      flex-shrink: 0;
+    }
+
+    /* ── Targetes d'aparells ── */
+    .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1rem; margin-top: 1rem; }
+    .card {
+      border: 2px solid #deeaf1;
+      border-radius: 10px;
+      padding: 1rem;
+      text-align: center;
+      background: #f5f9fc;
+      transition: transform .2s, box-shadow .2s;
+      cursor: default;
+    }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0,112,192,.15); }
+    .card .icon { font-size: 2.2rem; margin-bottom: .5rem; }
+    .card h4 { font-size: .95rem; color: #002060; }
+    .card p  { font-size: .82rem; color: #555; margin: .3rem 0 0; }
+
+    /* ── Vehicles ── */
+    .vehicles { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1rem; }
+    .vehicle-badge {
+      flex: 1; min-width: 130px;
+      border-radius: 50%;
+      aspect-ratio: 1;
+      max-width: 140px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      font-size: 1.6rem; font-weight: bold;
+      color: #fff;
+      padding: 1rem;
+      text-align: center;
+    }
+    .vehicle-badge span { font-size: .72rem; font-weight: normal; margin-top: .2rem; }
+
+    /* ── Activitat interactiva ── */
+    #quiz-box {
+      background: #f0f4f8;
+      border-radius: 10px;
+      padding: 1.2rem 1.5rem;
+      margin-top: 1rem;
+    }
+    #quiz-box p { font-weight: 600; font-size: 1.05rem; color: #002060; }
+    .opcions { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: .8rem; }
+    .opcions button {
+      background: #0070c0;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: .5rem 1.2rem;
+      font-size: .95rem;
+      cursor: pointer;
+      transition: background .2s, transform .1s;
+    }
+    .opcions button:hover { background: #005a9e; transform: scale(1.03); }
+    #resultat {
+      margin-top: 1rem;
+      font-size: 1rem;
+      font-weight: 600;
+      min-height: 1.5rem;
+    }
+    #resultat.ok  { color: #1a5c26; }
+    #resultat.nok { color: #b02020; }
+
+    /* ── Consells ── */
+    .consells { list-style: none; }
+    .consells li {
+      background: #deeaf1;
+      border-left: 4px solid #0070c0;
+      border-radius: 0 8px 8px 0;
+      padding: .7rem 1rem;
+      margin-bottom: .6rem;
+      font-size: .95rem;
+    }
+
+    /* ── Peu ── */
+    footer {
+      text-align: center;
+      font-size: .85rem;
+      color: #666;
+      padding: 1.5rem 1rem;
+      background: #deeaf1;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>⚡ L'Etiqueta Energètica</h1>
+  <p>Tecnologia i Digitalització · 1r ESO · Institut Lluís de Requesens</p>
+</header>
+
+<nav>
+  <a href="javascript:void(0)" onclick="mostra('inici')">🏠 Inici</a>
+  <a href="javascript:void(0)" onclick="mostra('electrodomestics')">🔌 Electrodomèstics</a>
+  <a href="javascript:void(0)" onclick="mostra('vehicles')">🚗 Vehicles</a>
+  <a href="javascript:void(0)" onclick="mostra('habitatges')">🏠 Habitatges</a>
+  <a href="javascript:void(0)" onclick="mostra('activitat')">🧩 Activitat</a>
+  <a href="javascript:void(0)" onclick="mostra('consells')">💡 Consells</a>
+</nav>
+
+<main>
+
+  <!-- ── INICI ── -->
+  <section id="inici" class="active">
+    <h2>Benvinguts!</h2>
+    <p>En aquest web aprendrem tot sobre l'<strong>etiqueta energètica</strong>: un sistema de classificació que ens permet saber quina quantitat d'energia consumeix un electrodomèstic, un vehicle o un habitatge.</p>
+    <p>L'<strong>eficiència energètica</strong> consisteix en obtenir el mateix resultat consumint la menor quantitat d'energia possible. La <strong>Comunitat Econòmica Europea (CEE)</strong> obliga a etiquetar energèticament tots els electrodomèstics, vehicles i habitatges.</p>
+    <h3>Per on vols començar?</h3>
+    <ul style="line-height:2; padding-left:1.2rem;">
+      <li>🔌 <a href="javascript:void(0)" onclick="mostra('electrodomestics')">Etiquetes dels electrodomèstics</a></li>
+      <li>🚗 <a href="javascript:void(0)" onclick="mostra('vehicles')">Distintius ambientals dels vehicles</a></li>
+      <li>🏠 <a href="javascript:void(0)" onclick="mostra('habitatges')">Certificat d'eficiència dels habitatges</a></li>
+      <li>🧩 <a href="javascript:void(0)" onclick="mostra('activitat')">Posa a prova els teus coneixements</a></li>
+      <li>💡 <a href="javascript:void(0)" onclick="mostra('consells')">Consells per estalviar energia</a></li>
+    </ul>
+  </section>
+
+  <!-- ── ELECTRODOMÈSTICS ── -->
+  <section id="electrodomestics">
+    <h2>🔌 Etiqueta energètica dels electrodomèstics</h2>
+    <p>Hi ha <strong>7 classes energètiques</strong> identificades amb lletres de la <strong>A</strong> (la més eficient) a la <strong>G</strong> (la menys eficient). Alguns aparells incorporen les subclasses <strong>A+, A++ i A+++</strong>.</p>
+
+    <ul class="escala">
+      <li><div class="badge" style="background:#00b050">A</div> Molt alta eficiència — consum inferior al 55% de la mitjana</li>
+      <li><div class="badge" style="background:#70ad47">B</div> Alta — entre el 55% i el 75%</li>
+      <li><div class="badge" style="background:#a9d18e">C</div> Mitjana-alta — entre el 75% i el 90%</li>
+      <li><div class="badge" style="background:#ffd700; color:#333">D</div> Mitjana — entre el 90% i el 100%</li>
+      <li><div class="badge" style="background:#ffc000">E</div> Mitjana-baixa — entre el 100% i el 110%</li>
+      <li><div class="badge" style="background:#ff0000">F</div> Baixa — entre el 110% i el 125%</li>
+      <li><div class="badge" style="background:#7030a0">G</div> Molt baixa — superior al 125%</li>
+    </ul>
+
+    <h3>Aparells que porten etiqueta obligatòriament</h3>
+    <div class="cards">
+      <div class="card"><div class="icon">❄️</div><h4>Frigorífic</h4><p>Inclou classes A, A+, A++, A+++</p></div>
+      <div class="card"><div class="icon">🌀</div><h4>Rentadora</h4><p>Valoració per al rentat i el centrifugat</p></div>
+      <div class="card"><div class="icon">🍽️</div><h4>Rentavaixelles</h4><p>Menys de 19 L/rentada (classe A)</p></div>
+      <div class="card"><div class="icon">📺</div><h4>Televisor</h4><p>Consum anual en kWh</p></div>
+      <div class="card"><div class="icon">🌬️</div><h4>Assecadora</h4><p>Classe de secació inclosa</p></div>
+      <div class="card"><div class="icon">🧊</div><h4>Congelador</h4><p>Classe A: menys d'1 kWh/dia</p></div>
+    </div>
+
+    <h3>📊 Estalvi real: exemple pràctic</h3>
+    <p>Un congelador de <strong>classe A</strong> (280 litres) consumeix <strong>&lt;1 kWh/dia</strong>, mentre que un de <strong>classe C</strong> consumeix <strong>~1,5 kWh/dia</strong>. En <strong>10 anys</strong>, la diferència és de <strong>1.875 kWh estalviats = 1.125 €</strong> (a 0,6 €/kWh).</p>
+  </section>
+
+  <!-- ── VEHICLES ── -->
+  <section id="vehicles">
+    <h2>🚗 Distintius ambientals dels vehicles (DGT)</h2>
+    <p>La <strong>Direcció General de Trànsit (DGT)</strong> classifica els vehicles en funció dels contaminants que emeten. Els primers distintius es van repartir a <strong>finals de l'estiu de 2016</strong>.</p>
+
+    <div class="vehicles">
+      <div class="vehicle-badge" style="background:#ffd700; color:#333">B<span>Benzina des de 2000 / Dièsel des de 2006</span></div>
+      <div class="vehicle-badge" style="background:#2e8b57">C<span>Benzina des de 2006 / Dièsel des de 2014</span></div>
+      <div class="vehicle-badge" style="background:linear-gradient(135deg,#2e8b57,#4169e1)">ECO<span>Híbrids i gas natural</span></div>
+      <div class="vehicle-badge" style="background:#4169e1">0<span>Zero emissions (elèctrics purs)</span></div>
+    </div>
+
+    <h3>Mesures que permet aplicar la classificació</h3>
+    <ul style="padding-left:1.2rem; line-height:1.9;">
+      <li>Restriccions urbanes en dies d'alta contaminació</li>
+      <li>Beneficis fiscals per a vehicles ecològics</li>
+      <li>Accés al carril bus-VAO per als vehicles Zero Emissions</li>
+      <li>Discriminació positiva pels transports més eficients</li>
+    </ul>
+  </section>
+
+  <!-- ── HABITATGES ── -->
+  <section id="habitatges">
+    <h2>🏠 Etiqueta energètica dels habitatges</h2>
+    <p>Des de l'<strong>1 de juny de 2013</strong>, qualsevol edifici que es ven o lloga ha de tenir el <strong>Certificat d'Eficiència Energètica</strong>. Utilitza la mateixa escala A–G que els electrodomèstics.</p>
+
+    <h3>Informació que inclou el certificat</h3>
+    <ul style="padding-left:1.2rem; line-height:1.9;">
+      <li>⚡ Consum d'energia primària: <strong>kWh/m²·any</strong></li>
+      <li>🌫️ Emissions de CO₂: <strong>kg CO₂/m²·any</strong></li>
+      <li>🌡️ Demanda de calefacció i refrigeració</li>
+    </ul>
+
+    <h3>Factors que influeixen en la qualificació</h3>
+    <ol style="padding-left:1.2rem; line-height:1.9;">
+      <li><strong>Superfície:</strong> els immobles petits (&lt;50 m²) solen obtenir pitjors qualificacions.</li>
+      <li><strong>Envolvent:</strong> qualitat de les parets, finestres, vidres i persianes.</li>
+      <li><strong>Instal·lacions:</strong> antiguitat i combustible del sistema de calefacció i ACS.</li>
+      <li><strong>Zona climàtica:</strong> el clima i l'altitud on es troba l'edifici.</li>
+    </ol>
+  </section>
+
+  <!-- ── ACTIVITAT INTERACTIVA ── -->
+  <section id="activitat">
+    <h2>🧩 Posa a prova els teus coneixements!</h2>
+    <p>Respon a les preguntes sobre l'etiqueta energètica. Quan acabis, fes clic a <strong>Comprovar</strong> per saber si has encertat.</p>
+
+    <div id="quiz-box">
+      <p id="pregunta-text">Carregant pregunta...</p>
+      <div class="opcions" id="opcions-container"></div>
+      <p id="resultat"></p>
+      <button onclick="seguentPregunta()" style="margin-top:1rem; background:#002060; color:#fff; border:none; border-radius:8px; padding:.6rem 1.4rem; cursor:pointer; font-size:.95rem;">
+        Següent pregunta ▶
+      </button>
+      <p id="progres" style="margin-top:.6rem; font-size:.88rem; color:#555;"></p>
+    </div>
+  </section>
+
+  <!-- ── CONSELLS ── -->
+  <section id="consells">
+    <h2>💡 Consells per estalviar energia</h2>
+    <p>Petits canvis al dia a dia poden suposar un gran estalvi energètic i econòmic!</p>
+
+    <h3>🔦 Il·luminació</h3>
+    <ul class="consells">
+      <li>Aprofita la llum natural i apaga els llums quan surts d'una habitació.</li>
+      <li>Utilitza bombetes LED: duren 8 vegades més i estalvien fins al 80% d'energia.</li>
+      <li>Instal·la tubs fluorescents on calgui molta llum continuada (cuina, bany).</li>
+    </ul>
+
+    <h3>🏠 Calefacció i refrigeració</h3>
+    <ul class="consells">
+      <li>Manté la calefacció a 20 ºC — cada grau extra suposa un 5% més de consum.</li>
+      <li>Un bon aïllament (doble vidre, segellat de portes) pot estalviar entre el 20 i el 40%.</li>
+      <li>Regula el termòstat de l'ACS entre 50 i 60 ºC.</li>
+    </ul>
+
+    <h3>🍽️ Electrodomèstics</h3>
+    <ul class="consells">
+      <li>Compra sempre electrodomèstics amb etiqueta A, A+ o A++.</li>
+      <li>Desconnecta del tot televisors i equips: el mode stand-by pot consumir fins al 80%!</li>
+      <li>No poseu aliments calents al frigorífic — el termòstat òptim és entre 3 i 5 ºC.</li>
+      <li>La rentadora i el rentavaixelles: fes servir a plena càrrega i amb programes freds.</li>
+      <li>Prefereix el microones al forn convencional: estalvia temps i consumeix menys.</li>
+    </ul>
+
+    <h3>🚿 Aigua</h3>
+    <ul class="consells">
+      <li>Substitueix el bany per la dutxa: consumeix la quarta part d'aigua i energia.</li>
+    </ul>
+  </section>
+
+</main>
+
+<footer>
+  <p>Creat amb HTML, CSS i JavaScript · Tecnologia i Digitalització · 1r ESO · IES Lluís de Requesens</p>
+  <p style="margin-top:.3rem;">💡 Ajuda IA: ChatGPT (generació de contingut i depuració de codi)</p>
+</footer>
+
+<script>
+  // ── Navegació entre seccions ──
+  function mostra(id) {
+    document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    return false;
+  }
+
+  // ── Quiz interactiu ──
+  const preguntes = [
+    {
+      text: "Quina és la classe energètica MÉS eficient dels electrodomèstics?",
+      opcions: ["G", "D", "A", "B"],
+      correcta: 2
+    },
+    {
+      text: "Quina classe energètica és la MENYS eficient?",
+      opcions: ["A", "C", "F", "G"],
+      correcta: 3
+    },
+    {
+      text: "Quants nivells de classes energètiques hi ha als electrodomèstics?",
+      opcions: ["5", "7", "10", "3"],
+      correcta: 1
+    },
+    {
+      text: "Quin distintiu de la DGT correspon als vehicles Zero Emissions (elèctrics purs)?",
+      opcions: ["B", "C", "ECO", "0"],
+      correcta: 3
+    },
+    {
+      text: "Des de quan és obligatori el Certificat d'Eficiència Energètica per als habitatges?",
+      opcions: ["1 de gener de 2010", "1 de juny de 2013", "1 de gener de 2020", "1 de juliol de 2016"],
+      correcta: 1
+    },
+    {
+      text: "Quin percentatge del consum d'una rentadora es destina a escalfar l'aigua?",
+      opcions: ["30%", "50%", "70%", "90%"],
+      correcta: 3
+    },
+    {
+      text: "Cada grau extra de calefacció suposa quin augment de consum?",
+      opcions: ["1%", "3%", "5%", "10%"],
+      correcta: 2
+    },
+    {
+      text: "Les bombetes LED estalvien fins a quin percentatge d'energia respecte a les incandescents?",
+      opcions: ["20%", "50%", "80%", "95%"],
+      correcta: 2
+    },
+    {
+      text: "Quin organisme gestiona els distintius ambientals dels vehicles a Espanya?",
+      opcions: ["La Comissió Europea", "La DGT", "L'ICAEN", "El Ministeri d'Energia"],
+      correcta: 1
+    },
+    {
+      text: "Quina unitat s'utilitza per mesurar el consum d'energia primària dels habitatges?",
+      opcions: ["kW/m²", "kWh/m²·any", "kg CO₂/m²", "W/m²·dia"],
+      correcta: 1
+    }
+  ];
+
+  let actual = 0;
+  let puntuacio = 0;
+  let respost = false;
+
+  function carregaPregunta() {
+    if (actual >= preguntes.length) {
+      document.getElementById('quiz-box').innerHTML =
+        `<p style="font-size:1.3rem; color:#002060; font-weight:bold;">
+           Has respost ${puntuacio} de ${preguntes.length} preguntes correctament! 🎉
+         </p>
+         <button onclick="reiniciaQuiz()" style="margin-top:1rem; background:#0070c0; color:#fff; border:none; border-radius:8px; padding:.6rem 1.4rem; cursor:pointer; font-size:.95rem;">
+           Torna a jugar 🔄
+         </button>`;
+      return;
+    }
+
+    const p = preguntes[actual];
+    document.getElementById('pregunta-text').textContent = `❓ ${p.text}`;
+    document.getElementById('resultat').textContent = '';
+    document.getElementById('resultat').className = '';
+    document.getElementById('progres').textContent =
+      `Pregunta ${actual + 1} de ${preguntes.length} · Encerts: ${puntuacio}`;
+    respost = false;
+
+    const cont = document.getElementById('opcions-container');
+    cont.innerHTML = '';
+    p.opcions.forEach((op, i) => {
+      const btn = document.createElement('button');
+      btn.textContent = op;
+      btn.onclick = () => comprovaResposta(i);
+      cont.appendChild(btn);
+    });
+  }
+
+  function comprovaResposta(index) {
+    if (respost) return;
+    respost = true;
+    const p = preguntes[actual];
+    const res = document.getElementById('resultat');
+    const btns = document.querySelectorAll('.opcions button');
+
+    btns.forEach((b, i) => {
+      b.disabled = true;
+      if (i === p.correcta) b.style.background = '#1a5c26';
+      else if (i === index && index !== p.correcta) b.style.background = '#b02020';
+    });
+
+    if (index === p.correcta) {
+      res.textContent = '✅ Correcte! Molt bé!';
+      res.className = 'ok';
+      puntuacio++;
+    } else {
+      res.textContent = `❌ Incorrecte. La resposta correcta era: ${p.opcions[p.correcta]}`;
+      res.className = 'nok';
+    }
+    document.getElementById('progres').textContent =
+      `Pregunta ${actual + 1} de ${preguntes.length} · Encerts: ${puntuacio}`;
+  }
+
+  function seguentPregunta() {
+    if (!respost && actual < preguntes.length) {
+      document.getElementById('resultat').textContent = "⚠️ Selecciona una opció abans de continuar!";
+      document.getElementById('resultat').className = 'nok';
+      return;
+    }
+    actual++;
+    carregaPregunta();
+  }
+
+  function reiniciaQuiz() {
+    actual = 0; puntuacio = 0; respost = false;
+    document.getElementById('activitat').innerHTML = `
+      <h2>🧩 Posa a prova els teus coneixements!</h2>
+      <p>Respon a les preguntes sobre l'etiqueta energètica.</p>
+      <div id="quiz-box">
+        <p id="pregunta-text"></p>
+        <div class="opcions" id="opcions-container"></div>
+        <p id="resultat"></p>
+        <button onclick="seguentPregunta()" style="margin-top:1rem; background:#002060; color:#fff; border:none; border-radius:8px; padding:.6rem 1.4rem; cursor:pointer; font-size:.95rem;">Següent pregunta ▶</button>
+        <p id="progres" style="margin-top:.6rem; font-size:.88rem; color:#555;"></p>
+      </div>`;
+    carregaPregunta();
+  }
+
+  // Inicia el quiz quan es carrega la pàgina
+  carregaPregunta();
+</script>
+
+</body>
+</html>
